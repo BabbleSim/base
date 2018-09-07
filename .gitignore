@@ -1,0 +1,15 @@
+bin/*
+*.o
+*.a
+*.so*
+*.d
+*.Tsymbols
+*.gcda
+*.gcno
+*~
+results/*
+~*.~*
+*Results.txt
+/.*project
+.settings/*
+/ext_*
