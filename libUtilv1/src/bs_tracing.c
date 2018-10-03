@@ -43,6 +43,14 @@ void bs_trace_force_color(char * argv, int offset){
   is_a_tty[1] = 1;
 }
 
+int bs_trace_is_tty(int file_index){
+  if (is_a_tty[file_index] == -1) {
+    FILE* fptrs[2] = {stdout, stderr};
+    is_a_tty[file_index] = isatty(fileno(fptrs[file_index]));
+  }
+  return is_a_tty[file_index];
+}
+
 void bs_trace_set_level(int new_trace_level) {
   trace_level = BS_MAX(new_trace_level,0);
 }

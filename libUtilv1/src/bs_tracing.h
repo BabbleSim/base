@@ -23,6 +23,7 @@ typedef bs_time_t (*time_f)(void);
 void bs_trace_disable_color(char * argv, int offset);
 void bs_trace_enable_color(char * argv, int offset);
 void bs_trace_force_color(char * argv, int offset);
+int bs_trace_is_tty(int file_number);
 
 void bs_trace_set_level(int new_trace_level);
 int  bs_trace_will_it_be_traced(int this_message_trace_level);
