@@ -74,14 +74,18 @@ void bs_dump_files_print_files(void) {
 }
 
 void bs_dump_files_open(const char* s, const unsigned int dev_number) {
-  char* results_path;
-
-  results_path = bs_create_result_folder(s);
+  char* results_path = NULL;
+  bool results_folder_created = false;
 
   for (unsigned int i = 0 ; i < number_of_dump_files; i ++) {
     if (df_ctrl[i].enabled == false) {
       continue;
     }
+    if (results_folder_created == false) {
+      results_path = bs_create_result_folder(s);
+      results_folder_created = true;
+    }
+
     char filename[strlen(df_ctrl[i].postfix) + strlen(results_path) + 25];
 
     sprintf(filename, "%s/d_%02i.%s.csv", results_path,
@@ -93,7 +97,10 @@ void bs_dump_files_open(const char* s, const unsigned int dev_number) {
       df_ctrl[i].header_f(df_ctrl[i].fileptr);
     }
   }
-  free(results_path);
+
+  if (results_path != NULL) {
+    free(results_path);
+  }
 }
 
 void bs_dump_files_close_all(void) {
