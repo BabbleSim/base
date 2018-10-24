@@ -52,7 +52,17 @@ include ${DEPENDFILES}
 
 $(COMPONENTS): | ${BSIM_OUT_PATH} ${BSIM_OUT_PATH}/bin/ ${BSIM_OUT_PATH}/lib/ ${BSIM_OUT_PATH}/results/
 	@if [ ! -d "${BSIM_OUT_PATH}/components/$@" ];then mkdir -p  ${BSIM_OUT_PATH}/components/$@ ; fi #let's create the output mirror directory of each component if it doesnt exist 
-	@export COMPONENT_OUTPUT_DIR=$(abspath ${BSIM_OUT_PATH}/components/$@) ; ${MAKE} --no-builtin-rules --warn-undefined-variables -C components/$@; ( [ $$? -ne 0 ] && echo "*** NOTE: $@ could NOT be built, continuing ***" ); true
+	@export COMPONENT_OUTPUT_DIR=$(abspath ${BSIM_OUT_PATH}/components/$@) ; ${MAKE} --no-builtin-rules --warn-undefined-variables -C components/$@; \
+	( if [ $$? -ne 0 ]; then \
+	  echo -n "*** NOTE: $@ could NOT be built, " ;\
+	  if [ -z $$BSIM_BUILD_FAIL_ASAP ]; then \
+	   echo "continuing ***" ;\
+	   true; \
+	  else \
+	   echo "aborting ***" ;\
+	   false; \
+	  fi; \
+	fi; )
 
 ${DEPENDFILES}:
 	$(warning $@ does not exist. Either you have a left over component folder or you forgot to add a depend file to a new component, either way please fix it (remove the empty component or create a proper Depend file) )
