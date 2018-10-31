@@ -85,6 +85,7 @@ void bs_args_parse_all_cmd_line(int argc, char *argv[], bs_args_struct_t args_st
 bool bs_args_parse_one_arg(char *argv, bs_args_struct_t args_struct[]);
 void bs_args_override_exe_name(char *name);
 void bs_args_set_trace_prefix(char *name);
+void bs_override_post_help(void (*new_f)(void));
 
 //Users can define these 2, so they will be used in the help message:
 //  char executable_name[];

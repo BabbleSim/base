@@ -27,6 +27,16 @@ static char empty_string[] ="";
 static char *overriden_executable_name = NULL;
 static char *trace_prefix = empty_string;
 
+static void (*post_help)(void) = component_print_post_help;
+
+/*
+ * Dynamically override the component post help function
+ */
+void bs_override_post_help(void (*new_f)(void)) {
+  post_help = new_f;
+}
+
+
 /**
  * Check if <arg> is the option <option>
  * The accepted syntax is:
@@ -442,7 +452,7 @@ void bs_args_print_long_help(bs_args_struct_t args_struct[]){
     }
     count++;
   }
-  component_print_post_help();
+  post_help();
 }
 
 /**
