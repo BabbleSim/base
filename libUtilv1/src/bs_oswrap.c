@@ -71,6 +71,7 @@ uint64_t bs_get_process_start_time(long int pid) {
   }
   long long unsigned int start_time;
   fscanf(fptr,"%llu", &start_time);
+  fclose(fptr);
   return start_time;
 }
 #endif
