@@ -11,6 +11,8 @@
  * For most devices,
  * (devices for which the args_struct starts with a BS_BASIC_DEVICE_*_OPTIONS_ARG_STRUCT)
  * we need to check that the parameters below have been set
+ *
+ * Never call this function unless the device args structure starts with BS_BASIC_DEVICE_OPTIONS_FIELDS
  */
 void bs_args_typical_dev_post_check(bs_basic_dev_args_t *a, bs_args_struct_t args_struct[], char *default_phy) {
   if (a->device_nbr == UINT_MAX) {
@@ -33,6 +35,8 @@ void bs_args_typical_dev_post_check(bs_basic_dev_args_t *a, bs_args_struct_t arg
 /**
  * For devices for which the args_struct starts with a BS_BASIC_DEVICE_*_OPTIONS_ARG_STRUCT,
  * this function sets their defaults properly
+ *
+ * Never call this function unless the device args structure starts with BS_BASIC_DEVICE_OPTIONS_FIELDS
  */
 void bs_args_typical_dev_set_defaults(bs_basic_dev_args_t *a, bs_args_struct_t args_struct[]) {
   bs_args_set_defaults(args_struct);
