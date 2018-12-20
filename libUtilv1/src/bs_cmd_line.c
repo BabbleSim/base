@@ -483,14 +483,14 @@ bool bs_args_parse_one_arg(char *argv, bs_args_struct_t args_struct[]){
           bs_trace_error_line("Programming error: I only know how to automatically read boolean switches\n");
         }
 
-      } else { //if not switch we need to read it
+      } else { //if not switch
         if ( args_struct[count].dest != NULL ){
           bs_read_optionparam(&argv[offset],
               args_struct[count].dest,
               args_struct[count].type,
               args_struct[count].name);
-        } else {
-          bs_trace_warning_line("Programming error(?): while processign command line (%s) the destination pointer is NULL but the type is not manual\n", argv);
+        } else if ( args_struct[count].call_when_found == NULL ) {
+          bs_trace_warning_line("Programming error(?): while processign command line (%s): both the destination pointer and the callback are NULL but the type is not manual\n", argv);
         }
       }
       if ( args_struct[count].call_when_found ){
