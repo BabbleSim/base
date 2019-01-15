@@ -72,7 +72,7 @@ clean_results:
 
 clean:
 	@echo "Deleting intermediate compilation results + libraries + executables (*.d .o .a .so & bin/bs_*)"
-	@find -L ${BSIM_OUT_PATH} -path *fftw-* -prune -o \( -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*~" -o -name "*.d" -o -name "*.Tsymbols" \)  | grep -v fftw  | grep -i -v libCrypto | xargs rm -f  \;  
+	@find -L ${BSIM_OUT_PATH} -path *fftw-* -prune -o \( -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*~" -o -name "*.d" -o -name "*.Tsymbols" \)  | grep -v fftw  | xargs rm -f  \;
 	@#avoid looking into the library directories we dont want to need to rebuild each time somebody goes and runs make clean
 	@cd ${BSIM_OUT_PATH}/bin/ ; rm bs_* >& /dev/null ; true
 
