@@ -52,32 +52,43 @@ void bs_set_sig_term_handler(void (*f)(int), int signals[], int n) {
  * Return a process start time (the time the process started after system boot)
  * in whatever format it is stored in /proc/<pid>/stat field 22
  * See man proc(5) for more info
+ *
+ * Note that the format of /proc/<pid>/stat is not part of any standard or
+ * necessarily an stable API. But it has been stable in Linux.
+ * In case you are having trouble with this code, you may want to set
+ * DONT_READ_PROC_STAT
  */
 uint64_t bs_get_process_start_time(long int pid) {
+#if DONT_READ_PROC_STAT
+  return 0;
+#else
   char filename[50];
   FILE *fptr;
   sprintf(filename, "/proc/%li/stat",pid);
   fptr = bs_fopen(filename,"r");
 
   int c = fgetc(fptr);
-  while( c != ')') { //If the executable would have a ")" in its name we'd have a problem.. but nevermind that odd case..
+  while(c != ')' && c!= EOF) { //If the executable would have a ")" in its name we'd have a problem.. but nevermind that odd case..
     c = fgetc(fptr);
   }
   int count = 1;
-  while (count!=21){
+  while (count!=21) {
     c = fgetc(fptr);
     if (c==' ')
       count++;
+    if (c == EOF)
+      return 0;
   }
   long long unsigned int start_time;
   fscanf(fptr,"%llu", &start_time);
   fclose(fptr);
   return start_time;
+#endif
 }
 #endif
 
 /**
- * Wrapper to OS malloc which exists if it cannot allocate mem
+ * Wrapper to OS malloc which exits if it cannot allocate mem
  */
 void* bs_malloc(size_t size) {
   void* pointer;
@@ -89,7 +100,7 @@ void* bs_malloc(size_t size) {
 }
 
 /**
- * Wrapper to OS aligned alloc which exists if it cannot allocate mem
+ * Wrapper to OS aligned alloc which exits if it cannot allocate mem
  */
 void* bs_aligned_alloc(size_t alignment, size_t size) {
   void* memptr;
@@ -100,7 +111,7 @@ void* bs_aligned_alloc(size_t alignment, size_t size) {
 }
 
 /**
- * Wrapper to OS calloc which exists if it cannot allocate mem
+ * Wrapper to OS calloc which exits if it cannot allocate mem
  */
 void* bs_calloc(size_t nmemb, size_t size) {
   void* pointer;
@@ -112,7 +123,7 @@ void* bs_calloc(size_t nmemb, size_t size) {
 }
 
 /**
- * Wrapper to OS realloc which exists if it cannot allocate mem
+ * Wrapper to OS realloc which exits if it cannot allocate mem
  */
 void* bs_realloc(void *ptr, size_t size) {
   ptr = realloc(ptr, size);
@@ -123,7 +134,7 @@ void* bs_realloc(void *ptr, size_t size) {
 }
 
 /**
- * Move file pointer to the next line 
+ * Move file pointer to the next line
  */
 void bs_skipline(FILE *file) {
   char c;
@@ -146,7 +157,7 @@ void bs_readline(char *s, int size, FILE *stream){
 #define NO_FILE_WARNING "Cannot open file %s in mode %s\n"
 
 /*
- * Create a folder if it doesn't exist.
+ * Create a folder if it doesn't exist
  * Accounting for the fact that some other program may be racing to
  * create it at the same time
  *
@@ -169,7 +180,7 @@ int bs_createfolder(const char* folderpath) {
 }
 
 /**
- * Wrapper to OS fopen which exists if it cannot open the file
+ * Wrapper to OS fopen which exits if it cannot open the file
  */
 FILE* bs_fopen(const char *file_path, const char *open_type) {
   FILE* file_pointer;
