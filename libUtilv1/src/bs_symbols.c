@@ -13,7 +13,7 @@
  * Functions to resolve symbols names from their addresses *
  ***********************************************************/
 
-#define SymbolNameSize 64
+#define SymbolNameSize 256
 typedef struct {
   void* Offset;
   char FName[SymbolNameSize];
@@ -58,6 +58,7 @@ void bs_read_function_names_from_Tsymbols(const char *probable_binary_name){
       }
 
       read = fscanf(symbols_file, "%"STR(SymbolNameSize)"s%c", functions_table[read_symbols].FName, &endofline);
+      functions_table[read_symbols].FName[SymbolNameSize-1] = '\0'; //properly terminate it, in case it was longer than SymbolNameSize
       if ( (read == 0) || ( read == EOF) ){
         error = 2;
         break;
