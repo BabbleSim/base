@@ -17,14 +17,14 @@ extern "C" {
 
 #define RAND_PROB_1 RAND_MAX
 
-INLINE uint bs_random_Bern(uint32_t probability);
+BSIM_INLINE uint bs_random_Bern(uint32_t probability);
 
 /**
  * Do a Bernouilli drop
  *
  * probability: number between 0 (0.0) and RAND_PROB_1 (1.0)
  */
-INLINE uint bs_random_Bern(uint32_t probability){
+BSIM_INLINE uint bs_random_Bern(uint32_t probability){
   if ( random() < probability )
     return 1;
   else

@@ -19,8 +19,8 @@ extern "C"{
 int pb_create_fifo_if_not_there(const char* fifo_name);
 int pb_create_com_folder(const char* s);
 void pb_send_payload(int ff, void *buf, size_t size);
-INLINE void pb_send_msg(int ff, pc_header_t header,
-                        void *s, size_t s_size);
+BSIM_INLINE void pb_send_msg(int ff, pc_header_t header,
+                             void *s, size_t s_size);
 
 typedef struct {
   char **ff_path_dtp;
@@ -59,8 +59,8 @@ int pb_dev_request_wait_block(pb_dev_state_t *this, pb_wait_t *wait_s);
 int pb_dev_request_wait_nonblock(pb_dev_state_t *this, pb_wait_t *wait_s);
 int pb_dev_pick_wait_resp(pb_dev_state_t *this);
 
-INLINE void pb_send_msg(int ff, pc_header_t header,
-                        void *s, size_t s_size) {
+BSIM_INLINE void pb_send_msg(int ff, pc_header_t header,
+                             void *s, size_t s_size) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
     write(ff, &header, sizeof(header));

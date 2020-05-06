@@ -28,8 +28,12 @@ typedef uint64_t bs_time_t;
 #define PRItime PRIu64
 #define SCNtime SCNu64
 
-#ifndef INLINE
-  #define INLINE static __attribute__((__always_inline__)) inline
+#if !defined(BSIM_INLINE)
+#define BSIM_INLINE static __attribute__((__always_inline__)) inline
+#endif
+
+#if !defined(INLINE) && !defined(DONT_DEFINE_INLINE)
+  #define INLINE BSIM_INLINE
 #endif
 
 #ifdef __cplusplus
