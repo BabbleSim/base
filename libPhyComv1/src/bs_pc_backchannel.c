@@ -185,8 +185,10 @@ void bs_bc_send_msg(uint channel_id, uint8_t *ptr, size_t size){
   //To avoid problems we move all data in one write() call.
   //(otherwise the context maybe switched out between writes and the read may fail on the other side)
 
-  if (write(channels_status[channel_id].ff[Out], message, size+4) != size+4) {
-    bs_trace_error_line("back channel %u filled up\n", channel_id);
+  int bytes_written = write(channels_status[channel_id].ff[Out], message, size+4);
+  if ( bytes_written != size+4 ) {
+    bs_trace_error_line("back channel %u filled up (%i != %z+4, errno=%i)\n",
+                        channel_id, bytes_written, size, errno);
   }
 }
 
@@ -200,18 +202,24 @@ int bs_bc_is_msg_received(uint channel_id){
   if ( channel_id >= number_back_channels )
     bs_trace_error_line("you are trying to check for a message in a non existent back channel (%u)\n", channel_id);
 
-  if ( channels_status[channel_id].pending_read_bytes == 0 ){ //otherwise we already know it..
+  while ( channels_status[channel_id].pending_read_bytes == 0 ){ //otherwise the user is calling this function twice (and we'd break the protocol)
     uint32_t size32;
     int read_size = read(channels_status[channel_id].ff[In],&size32,sizeof(uint32_t)); //non blocking read
     if ( read_size == sizeof(uint32_t) ) {
       channels_status[channel_id].pending_read_bytes = size32;
     } else if ( ( read_size == -1 ) && (errno == EAGAIN) ) { //Nothing yet there
-      channels_status[channel_id].pending_read_bytes = 0;
+      break;
+    } else if ( ( read_size == -1 ) && (errno == EINTR) ) {
+      //A signal interrupted the read before anything was read => retry needed
+      bs_trace_warning_line("Read to back channel %u interrupted by signal => Retrying\n",
+                            channel_id);
     } else if ( read_size == EOF ) { //The FIFO was closed by the other side
       channels_status[channel_id].pending_read_bytes = -1;
       bs_trace_raw_time(3,"The back channel %u was closed by the other side\n",channel_id);
+      break;
     } else {
-      bs_trace_error_line("Unexpected error (%u)\n", channel_id);
+      bs_trace_error_line("Unexpected error in channel %u (%i read, errno=%i)\n",
+                          channel_id, read_size, errno);
     }
   }
   return channels_status[channel_id].pending_read_bytes;
@@ -238,7 +246,9 @@ void bs_bc_receive_msg(int channel_id , uint8_t *ptr, size_t size){
 
   int read_size = read(channels_status[channel_id].ff[In],ptr,size); //Non-blocking read
   if ( read_size != size ) {
-    bs_trace_error_line("Back channel %u broken (probably the other side crashed in the middle of a message == nasty)\n", channel_id);
+    bs_trace_error_line("Back channel %u broken (%i != %z bytes, errno=%i, pending=%i) "
+                        "(probably the other side crashed in the middle of a message == nasty)\n",
+                        channel_id, read_size, size, errno, channels_status[channel_id].pending_read_bytes);
   }
   channels_status[channel_id].pending_read_bytes -= size;
 }
