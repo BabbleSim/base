@@ -207,7 +207,7 @@ int bs_bc_is_msg_received(uint channel_id){
     int read_size = read(channels_status[channel_id].ff[In],&size32,sizeof(uint32_t)); //non blocking read
     if ( read_size == sizeof(uint32_t) ) {
       channels_status[channel_id].pending_read_bytes = size32;
-    } else if ( ( read_size == -1 ) && (errno == EAGAIN) ) { //Nothing yet there
+    } else if ( ( ( read_size == -1 ) && (errno == EAGAIN) ) || (read_size == 0) ) { //Nothing yet there
       break;
     } else if ( ( read_size == -1 ) && (errno == EINTR) ) {
       //A signal interrupted the read before anything was read => retry needed
@@ -218,8 +218,8 @@ int bs_bc_is_msg_received(uint channel_id){
       bs_trace_raw_time(3,"The back channel %u was closed by the other side\n",channel_id);
       break;
     } else {
-      bs_trace_error_line("Unexpected error in channel %u (%i read, errno=%i)\n",
-                          channel_id, read_size, errno);
+      bs_trace_error_line("Unexpected error in channel %u (%i read, errno=%i: %s)\n",
+                          channel_id, read_size, errno, strerror(errno));
     }
   }
   return channels_status[channel_id].pending_read_bytes;
