@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <pwd.h>
+#include <errno.h>
+
 
 bool is_base_com_initialized = false; //Used by the BackChannel to avoid deadlocks
 char *pb_com_path = NULL;
@@ -44,15 +46,35 @@ int pb_create_fifo_if_not_there(const char *fifo_path) {
  *   -1 otherwise
  */
 int pb_create_com_folder(const char *s) {
-  char *UserName;
+  char *UserName = NULL;
   int UserNameLength = 0;
   struct passwd *pw;
 
-  pw = getpwuid(geteuid());
+  uid_t euid = geteuid();
+  errno = 0;
+  pw = getpwuid(euid);
   if (pw != NULL) {
     UserName = pw->pw_name;
+  } else if (!((errno == 0) || (errno == ENOENT) || (errno== ESRCH) || (errno== EBADF) || (errno == EPERM))) {
+    bs_trace_warning_line("Warning, completely unexpected error trying to get the user name will try to recover but will likely fail"
+        "(euid=%i, errno=%i)\n", euid, errno);
   } else {
-    bs_trace_error_line("Couldn't get the user name to build the tmp path for the interprocess comm (this shouldn't have happened)\n");
+    //Otherwise (pw == NULL AND any of those errors), it seems the user is not a real user, or the connection to the NIS server is down or..
+    bs_trace_info_line(2, "You seem to be running this program as a not real user(?). Will try to recover"
+            "(euid=%i, errno=%i)\n", euid, errno);
+  }
+
+  if (UserName == NULL) {
+    //Let's hope the POSIX required LOGNAME environment variable is set
+    UserName = getenv("LOGNAME");
+  }
+  if (UserName == NULL) {
+    //It was not.. let's hope for USER..
+    UserName = getenv("USER");
+  }
+  if (UserName == NULL) {
+    bs_trace_error_line("Couldn't get the user name to build the tmp path for the interprocess comm (euid=%i)"
+        "(this shouldn't have happened, could not find the environment variables LOGNAME or USER either), errno=%i\n", euid, errno);
   }
 
   UserNameLength = strlen(UserName);
