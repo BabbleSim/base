@@ -19,7 +19,7 @@ extern "C"{
 #if (_BS_TSYMBOLS_TRACE )
 void bs_read_function_names_from_Tsymbols(const char *probable_binary_name);
 #else
-#define cs_read_function_names_from_Tsymbols(a)
+#define bs_read_function_names_from_Tsymbols(a)
 #endif
 
 int bs_could_be_symbol(uint32_t ptr);
