@@ -5,6 +5,7 @@ OBJS=$(abspath $(addprefix $(COMPONENT_OUTPUT_DIR)/,${SRCS:.c=.o}))
 OBJS32=$(abspath $(addprefix $(COMPONENT_OUTPUT_DIR)/,${SRCS:.c=.32.o}))
 LIBFILE=${LIB_NAME}.a
 LIBFILE_DYN=${LIB_NAME}.so
+VERSION_FILE:=${LIB_NAME}.version
 
 all: install
 
@@ -16,7 +17,7 @@ always_run_this_target:
 #phony target to trigger the rerun of the make of each library, but ensure that make checks if the library was regenerated (so it doesnt relink the binary if it wasnt)
 # we could do like in the root Makefile, and just go first over all the libraries makefiles we may need instead, but this is slighly more efficient (although more messy)
 
-.PHONY: all install compile lib clean clean_all ${DEPENDFILES} always_run_this_target
+.PHONY: all install compile lib clean clean_all ${DEPENDFILES} always_run_this_target version
 #setting the dependencies as phony targets will actually speed up things.. (otherwise make will check if there is implicit rules to remake them)
 
 compile: $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} $(COMPONENT_OUTPUT_DIR)/${LIBFILE}
@@ -50,9 +51,16 @@ clean_coverage:
 
 clean_all: clean clean_coverage
 
+${BSIM_LIBS_DIR}/${VERSION_FILE}: version
+	@if [[ -f "$<" ]]; then\
+	  cp $< $@; \
+	else \
+	  echo "unknown" > $@; \
+	fi
+
 ${BSIM_LIBS_DIR}/% : $(COMPONENT_OUTPUT_DIR)/%
 	@cp $< $@ 
 
-install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN} ${BSIM_LIBS_DIR}/${LIBFILE}
+install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN} ${BSIM_LIBS_DIR}/${LIBFILE} ${BSIM_LIBS_DIR}/${VERSION_FILE}
 
 Makefile: ;

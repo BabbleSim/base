@@ -3,6 +3,7 @@
 
 OBJS=$(abspath $(addprefix $(COMPONENT_OUTPUT_DIR)/,${SRCS:.c=.o}))
 LIBFILE_DYN=${LIB_NAME}.so
+VERSION_FILE:=${LIB_NAME}.version
 
 all: install
 
@@ -14,7 +15,7 @@ always_run_this_target:
 #phony target to trigger the rerun of the make of each library, but ensure that make checks if the library was regenerated (so it doesnt relink the binary if it wasnt)
 # we could do like in the root Makefile, and just go first over all the libraries makefiles we may need instead, but this is slighly more efficient (although more messy)
 
-.PHONY: all install compile lib clean clean_all ${DEPENDFILES} always_run_this_target
+.PHONY: all install compile lib clean clean_all ${DEPENDFILES} always_run_this_target version
 
 compile: $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} 
 
@@ -40,9 +41,16 @@ clean_coverage:
 
 clean_all: clean clean_coverage
 
+${BSIM_LIBS_DIR}/${VERSION_FILE}: version
+	@if [[ -f "$<" ]]; then\
+	  cp $< $@; \
+	else \
+	  echo "unknown" > $@; \
+	fi
+
 ${BSIM_LIBS_DIR}/% : $(COMPONENT_OUTPUT_DIR)/%
 	@cp $< $@ 
 
-install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN}
+install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN} ${BSIM_LIBS_DIR}/${VERSION_FILE}
 
 Makefile: ;

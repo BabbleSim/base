@@ -3,10 +3,16 @@
 
 OBJS=$(abspath $(addprefix $(COMPONENT_OUTPUT_DIR)/,${SRCS:.c=.o}))
 MAP_FILE_NAME=${EXE_NAME}.Tsymbols
+VERSION_FILE:=${EXE_NAME}.version
 
 all: install
 
--include $(addsuffix .d,$(basename ${OBJS}))
+DEPENDFILES:=$(addsuffix .d,$(basename ${OBJS})) 
+
+-include ${DEPENDFILES}
+
+.PHONY: all install compile clean clean_all ${DEPENDFILES} version
+#setting the dependencies as phony targets will actually speed up things.. (otherwise make will check if there is implicit rules to remake them)
 
 compile: $(COMPONENT_OUTPUT_DIR)/${EXE_NAME}
 
@@ -36,9 +42,16 @@ clean_coverage:
 
 clean_all: clean clean_coverage
 
+${BSIM_LIBS_DIR}/${VERSION_FILE}: version
+	@if [[ -f "$<" ]]; then\
+	  cp $< $@; \
+	else \
+	  echo "unknown" > $@; \
+	fi
+
 ${BSIM_BIN_DIR}/% : $(COMPONENT_OUTPUT_DIR)/%
 	@cp $< $@ 
 
-install: ${BSIM_BIN_DIR}/${EXE_NAME}  ${BSIM_BIN_DIR}/${MAP_FILE_NAME}
+install: ${BSIM_BIN_DIR}/${EXE_NAME}  ${BSIM_BIN_DIR}/${MAP_FILE_NAME} ${BSIM_LIBS_DIR}/${VERSION_FILE}
 
 .PHONY: install clean clean_all compile all 
