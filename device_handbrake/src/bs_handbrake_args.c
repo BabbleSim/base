@@ -55,7 +55,7 @@ void bs_handbrake_argparse(int argc, char *argv[], handbrake_args_t *args)
   args_g = args;
   bs_args_struct_t args_struct[] = {
       BS_BASIC_DEVICE_2G4_FAKE_OPTIONS_ARG_STRUCT,
-      { false, false , false, "p", "poke_period",     'f', (void*)&poke_period,    cmd_poke_period_found, "Period in which the simulation will be stalled (50e3 =50ms)"},
+      { false, false , false, "pp", "poke_period",    'f', (void*)&poke_period,    cmd_poke_period_found, "Period in which the simulation will be stalled (50e3 =50ms)"},
       { false, false , false, "r", "real_time_ratio", 'f', (void*)&(args->real_time_ratio),NULL, "Real timeness ratio (1); < 1: slower than real time; > 1: faster than real time"},
       ARG_TABLE_ENDMARKER
   };
