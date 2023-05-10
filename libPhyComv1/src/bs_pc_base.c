@@ -299,6 +299,7 @@ int pb_phy_initcom(pb_phy_state_t *this, const char* s, const char *p, uint n) {
     }
 
     this->device_connected[d] = true;
+    bs_trace_raw(9,"Connected to device %i\n", d);
   }
 
   return 0;
