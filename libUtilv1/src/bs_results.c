@@ -21,13 +21,13 @@ char* bs_create_result_folder(const char* s_id){
   sprintf(results_path,"../results");
 
   if (bs_createfolder(results_path) != 0) {
-    free(results_path);
     bs_trace_error_line("Couldn't create results folder %s\n", results_path);
+    free(results_path);
   }
   sprintf(results_path,"../results/%s",s_id);
   if (bs_createfolder(results_path) != 0) {
-    free(results_path);
     bs_trace_error_line("Couldn't create results folder %s\n", results_path);
+    free(results_path);
   }
   return results_path;
 }
