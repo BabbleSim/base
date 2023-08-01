@@ -1,5 +1,6 @@
 /*
  * Copyright 2018 Oticon A/S
+ * Copyright (c) 2023 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -28,6 +29,7 @@ void bs_skipline(FILE *file);
 void bs_readline(char *s, int size, FILE *stream);
 int bs_createfolder(const char* folderpath);
 FILE* bs_fopen(const char *file_path, const char *open_type);
+int bs_create_folders_in_path(const char *path);
 
 #ifdef __cplusplus
 }
