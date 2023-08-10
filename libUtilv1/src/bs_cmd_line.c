@@ -253,6 +253,9 @@ void bs_read_optionparam(const char* str, void *dest, const char type,
   }
 
   switch (type){
+    case 'b':
+      bs_trace_raw(9,"%s%s set to %d\n", trace_prefix, long_d, *((bool*)dest));
+      break;
     case 's':
       bs_trace_raw(9,"%s%s set to %s\n", trace_prefix, long_d, *((char**)dest));
       break;
@@ -477,7 +480,7 @@ bool bs_args_parse_one_arg(char *argv, bs_args_struct_t args_struct[]){
         if ( args_struct[count].type == 'b' ){
           if ( args_struct[count].dest != NULL ) {
             *(bool*)args_struct[count].dest = true;
-            bs_trace_raw(9,"%s%s set\n", trace_prefix, args_struct[count].name);
+            bs_trace_raw(9,"%s%s set\n", trace_prefix, args_struct[count].option);
           }
         } else {
           bs_trace_error_line("Programming error: I only know how to automatically read boolean switches\n");
