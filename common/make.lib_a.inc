@@ -27,6 +27,9 @@ $(COMPONENT_OUTPUT_DIR)/%.o: %.c
 	@if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi
 	@${CC} ${CPPFLAGS} ${CFLAGS} ${COVERAGE} -c $< -o $@
 
+%.c: ;
+%.h: ;
+
 $(COMPONENT_OUTPUT_DIR)/${LIBFILE}: $(COMPONENT_OUTPUT_DIR) ${OBJS} ${A_LIBS}
 	@rm $(COMPONENT_OUTPUT_DIR)/${LIBFILE} &> /dev/null ; true
 	@${AR} -cr $(COMPONENT_OUTPUT_DIR)/${LIBFILE} ${OBJS} ${A_LIBS}

@@ -25,6 +25,9 @@ $(COMPONENT_OUTPUT_DIR)/%.o: %.c
 	@if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi
 	@${CC} ${CPPFLAGS} ${CFLAGS} ${COVERAGE} -c $< -o $@
 
+%.c: ;
+%.h: ;
+
 $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} : ${OBJS} $(A_LIBS)
 	@${CC} -o $@ -fPIC -shared $^ ${LDFLAGS} ${SO_LIBS} ${A_LIBS} ${COVERAGE}
 
