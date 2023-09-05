@@ -29,4 +29,21 @@
 #define BS_MOD( x ,y ) ( ( ( (x) % (y) ) + (y) ) % (y) ) //Use this instead of just % to avoid problems with rem( % in C99 ) != mod
 #endif
 
+#if !defined(BS_STATIC_ASSERT)
+
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+#define BS_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
+/*
+ * GCC 4.6 and higher have the C11 _Static_assert built
+ */
+#elif !defined(__cplusplus) && \
+  ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) ||  \
+   (__STDC_VERSION__) >= 201100)
+#define BS_STATIC_ASSERT(...) _Static_assert(__VA_ARGS__)
+#else
+#define BS_STATIC_ASSERT(...)
+#endif
+
+#endif /* !defined(BS_STATIC_ASSERT) */
+
 #endif
