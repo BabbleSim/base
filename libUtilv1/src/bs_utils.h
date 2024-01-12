@@ -46,4 +46,8 @@
 
 #endif /* !defined(BS_STATIC_ASSERT) */
 
+#ifndef BS_UNREACHABLE
+#define BS_UNREACHABLE __builtin_unreachable()
+#endif
+
 #endif

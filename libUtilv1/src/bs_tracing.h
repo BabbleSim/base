@@ -56,6 +56,7 @@ extern "C"{
 #include <stdarg.h>
 #include <stddef.h>
 #include "bs_types.h"
+#include "bs_utils.h"
 
 typedef uint8_t (*main_cleanup_f)(void);
 typedef bs_time_t (*time_f)(void);
@@ -168,18 +169,29 @@ void bs_trace_vprint(base_trace_type_t type,
                      base_trace_timed_type_t time_type, bs_time_t time,
                      const char *format, va_list variable_args);
 
-#define bs_trace_exit(...)                  bs_trace_print(BS_TRACE_EXIT   ,NULL,    0,       5,BS_TRACE_NOTIME,       0,__VA_ARGS__)
-#define bs_trace_exit_line(...)             bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_NOTIME,       0,__VA_ARGS__)
-#define bs_trace_exit_line_time(...)        bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
-#define bs_trace_exit_time_line(...)        bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
-#define bs_trace_exit_time(...)             bs_trace_print(BS_TRACE_EXIT   ,NULL,    0,       5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
+#define bs_trace_exit(...)                  bs_trace_print(BS_TRACE_EXIT   ,NULL,    0,       5,BS_TRACE_NOTIME,       0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_exit_line(...)             bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_NOTIME,       0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_exit_line_time(...)        bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_exit_time_line(...)        bs_trace_print(BS_TRACE_EXIT   ,__FILE__,__LINE__,5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_exit_time(...)             bs_trace_print(BS_TRACE_EXIT   ,NULL,    0,       5,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
 
-#define bs_trace_error(...)                 bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_NOTIME,       0,__VA_ARGS__)
-#define bs_trace_error_line(...)            bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_NOTIME,       0,__VA_ARGS__)
-#define bs_trace_error_line_time(...)       bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
-#define bs_trace_error_time_line(...)       bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
-#define bs_trace_error_time(...)            bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__)
-#define bs_trace_error_manual_time(t,...)   bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_TIME_PROVIDED,t,__VA_ARGS__)
+#define bs_trace_error(...)                 bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_NOTIME,       0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_error_line(...)            bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_NOTIME,       0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_error_line_time(...)       bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_error_time_line(...)       bs_trace_print(BS_TRACE_ERROR  ,__FILE__,__LINE__,0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_error_time(...)            bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_AUTOTIME,     0,__VA_ARGS__); \
+                                               BS_UNREACHABLE
+#define bs_trace_error_manual_time(t,...)   bs_trace_print(BS_TRACE_ERROR  ,NULL,    0,       0,BS_TRACE_TIME_PROVIDED,t,__VA_ARGS__); \
+                                               BS_UNREACHABLE
 
 #define bs_trace_warning(...)               bs_trace_print(BS_TRACE_WARNING,NULL,    0,       0,BS_TRACE_NOTIME,       0,__VA_ARGS__)
 #define bs_trace_warning_line(...)          bs_trace_print(BS_TRACE_WARNING,__FILE__,__LINE__,0,BS_TRACE_NOTIME,       0,__VA_ARGS__)
