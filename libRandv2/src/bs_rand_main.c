@@ -8,6 +8,7 @@
 #include <complex.h>
 #include "bs_tracing.h"
 #include "bs_types.h"
+#include "bs_rand_inline.h"
 
 /**
  * Initialize the random generators
@@ -179,4 +180,18 @@ int bs_random_uniformRi(int a, int b){
 
 uint32_t bs_random_uint32(){
   return (uint32_t)random();
+}
+
+/**
+ * Do a binomial drop, that is produce a realization of B(n,p)
+ *
+ * n: number of independent trials
+ * probability: probability p, for each trial, a number between 0 (0.0) and RAND_PROB_1 (1.0)
+ */
+uint bs_random_Binomial(uint n, uint32_t probability){
+  uint acc = 0;
+  for (uint i = 0; i < n; i ++) {
+    acc += bs_random_Bern(probability);
+  }
+  return acc;
 }

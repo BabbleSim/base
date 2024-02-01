@@ -32,6 +32,8 @@ double bs_random_uniformR(double a, double b);
 int    bs_random_uniformRi(int a, int b);
 uint32_t bs_random_uint32();
 
+uint bs_random_Binomial(uint n, uint32_t probability);
+
 #ifdef __cplusplus
 }
 #endif
