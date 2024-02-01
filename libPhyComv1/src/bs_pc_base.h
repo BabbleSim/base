@@ -50,6 +50,10 @@ typedef struct {
   char *lock_path;
 } pb_dev_state_t;
 
+int pb_test_and_create_lock_file(const char *filename);
+void pb_remove_lock_file(char** file_path);
+int pb_device_test_and_create_lock_file(pb_dev_state_t *this, const char *phy_id, unsigned int dev_nbr);
+
 int pb_dev_init_com(pb_dev_state_t *this, uint d, const char* s, const char *p);
 void pb_dev_disconnect(pb_dev_state_t *this);
 void pb_dev_terminate(pb_dev_state_t *this);

@@ -133,7 +133,7 @@ static void lock_file_fill(const char *filename, long int my_pid){
  * Returns 0 if we consider it safe enough to continue
  *         Something else otherwise
  */
-static int test_and_create_lock_file(const char *filename) {
+int pb_test_and_create_lock_file(const char *filename) {
 #if !defined(NO_LOCK_FILE)
   pid_t my_pid = getpid();
 
@@ -200,7 +200,7 @@ static int test_and_create_lock_file(const char *filename) {
 #endif
 }
 
-static void remove_lock_file(char** file_path){
+void pb_remove_lock_file(char** file_path){
   if (*file_path) {
     remove(*file_path);
     free(*file_path);
@@ -213,7 +213,7 @@ static int phy_test_and_create_lock_file(pb_phy_state_t *this, const char *phy_i
   this->lock_path = (char*) bs_calloc(flen, sizeof(char));
   sprintf(this->lock_path, "%s/%s.phy.lock", pb_com_path, phy_id);
 
-  int ret = test_and_create_lock_file(this->lock_path);
+  int ret = pb_test_and_create_lock_file(this->lock_path);
   if (ret) {
     free(this->lock_path);
     this->lock_path = NULL;
@@ -221,13 +221,13 @@ static int phy_test_and_create_lock_file(pb_phy_state_t *this, const char *phy_i
   return ret;
 }
 
-static int device_test_and_create_lock_file(pb_dev_state_t *this, const char *phy_id, unsigned int dev_nbr){
+int pb_device_test_and_create_lock_file(pb_dev_state_t *this, const char *phy_id, unsigned int dev_nbr){
   int flen = pb_com_path_length + 20 + strlen(phy_id) + bs_number_strlen(dev_nbr);
 
   this->lock_path = (char*) bs_calloc(flen, sizeof(char));
 
   sprintf(this->lock_path, "%s/%s.d%i.lock", pb_com_path, phy_id, dev_nbr);
-  int ret = test_and_create_lock_file(this->lock_path);
+  int ret = pb_test_and_create_lock_file(this->lock_path);
   if (ret) {
     free(this->lock_path);
     this->lock_path = NULL;
@@ -371,7 +371,7 @@ void pb_phy_disconnect_devices(pb_phy_state_t *this) {
       this->ff_ptd = NULL;
     }
   }
-  remove_lock_file(&this->lock_path);
+  pb_remove_lock_file(&this->lock_path);
 }
 
 /**
@@ -456,7 +456,7 @@ int pb_dev_init_com(pb_dev_state_t *this, uint d, const char* s, const char *p) 
   this->this_dev_nbr = d;
   pb_com_path_length = pb_create_com_folder(s);
 
-  if ( device_test_and_create_lock_file(this, p, d) ) {
+  if ( pb_device_test_and_create_lock_file(this, p, d) ) {
     bs_trace_error_line("Failed to get lock\n");
   }
 
@@ -519,7 +519,7 @@ void pb_dev_disconnect(pb_dev_state_t *this) {
  */
 void pb_dev_clean_up(pb_dev_state_t *this) {
 
-  remove_lock_file(&this->lock_path);
+  pb_remove_lock_file(&this->lock_path);
 
   this->connected = false; //we don't want any possible future call to libphycom to attempt to talk with the phy
 
