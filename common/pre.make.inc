@@ -1,7 +1,7 @@
 # Copyright 2018 Oticon A/S
 # SPDX-License-Identifier: Apache-2.0
 
-SHELL:=/bin/bash
+SHELL:=bash
 
 COMPONENT_OUTPUT_DIR?=./#This should really be set by the top level makefile, but if it wasnt just to be safe we point here
 BSIM_OUT_PATH?=../../#This should really be set by the top level makefile, but if it wasnt just to be safe we point to where it normally is
