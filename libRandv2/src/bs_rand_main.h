@@ -15,8 +15,8 @@ extern "C" {
 #define RAND_PROB_1 RAND_MAX
 
 int bs_random_init(unsigned int seed);
-void bs_random_free();
-double bs_random_Gaus();
+void bs_random_free(void);
+double bs_random_Gaus(void);
 
 #ifdef complex
 //Only for those who have included <complex.h>:
@@ -26,11 +26,11 @@ void bs_random_Gaus_c_buffer(double complex* buffer, uint size);
 
 double bs_random_GPRND(double k, double sigma, double theta);
 
-char bs_random_bit();
-double bs_random_uniform();
+char bs_random_bit(void);
+double bs_random_uniform(void);
 double bs_random_uniformR(double a, double b);
 int    bs_random_uniformRi(int a, int b);
-uint32_t bs_random_uint32();
+uint32_t bs_random_uint32(void);
 
 uint bs_random_Binomial(uint n, uint32_t probability);
 
