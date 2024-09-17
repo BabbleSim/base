@@ -13,7 +13,7 @@ extern "C"{
 #endif
 
 uint *bs_open_back_channel(uint global_dev_nbr, uint* dev_nbrs, uint* channel_nbrs, uint number_of_channels);
-void bs_clean_back_channels();
+void bs_clean_back_channels(void);
 
 void bs_bc_send_msg(uint channel_id, uint8_t *ptr, size_t size);
 int bs_bc_is_msg_received(uint channel_id);
