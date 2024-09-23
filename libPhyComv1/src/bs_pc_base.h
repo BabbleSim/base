@@ -32,13 +32,13 @@ typedef struct {
   char *lock_path;
 } pb_phy_state_t;
 
-int pb_phy_is_connected_to_device(pb_phy_state_t * this, uint d);
-int pb_phy_initcom(pb_phy_state_t *this, const char* s, const char *p, uint n);
-void pb_phy_disconnect_devices(pb_phy_state_t *this);
-pc_header_t pb_phy_get_next_request(pb_phy_state_t *this, uint d);
-void pb_phy_get_wait_s(pb_phy_state_t *this, uint d, pb_wait_t *wait_s);
-void pb_phy_resp_wait(pb_phy_state_t *this, uint d);
-void pb_phy_free_one_device(pb_phy_state_t *this, int d);
+int pb_phy_is_connected_to_device(pb_phy_state_t *state, uint d);
+int pb_phy_initcom(pb_phy_state_t *state, const char* s, const char *p, uint n);
+void pb_phy_disconnect_devices(pb_phy_state_t *state);
+pc_header_t pb_phy_get_next_request(pb_phy_state_t *state, uint d);
+void pb_phy_get_wait_s(pb_phy_state_t *state, uint d, pb_wait_t *wait_s);
+void pb_phy_resp_wait(pb_phy_state_t *state, uint d);
+void pb_phy_free_one_device(pb_phy_state_t *state, int d);
 
 typedef struct {
   int ff_dtp;
@@ -52,16 +52,16 @@ typedef struct {
 
 int pb_test_and_create_lock_file(const char *filename);
 void pb_remove_lock_file(char** file_path);
-int pb_device_test_and_create_lock_file(pb_dev_state_t *this, const char *phy_id, unsigned int dev_nbr);
+int pb_device_test_and_create_lock_file(pb_dev_state_t *state, const char *phy_id, unsigned int dev_nbr);
 
-int pb_dev_init_com(pb_dev_state_t *this, uint d, const char* s, const char *p);
-void pb_dev_disconnect(pb_dev_state_t *this);
-void pb_dev_terminate(pb_dev_state_t *this);
-void pb_dev_clean_up(pb_dev_state_t *this);
-int pb_dev_read(pb_dev_state_t *this, void *buf, size_t n_bytes);
-int pb_dev_request_wait_block(pb_dev_state_t *this, pb_wait_t *wait_s);
-int pb_dev_request_wait_nonblock(pb_dev_state_t *this, pb_wait_t *wait_s);
-int pb_dev_pick_wait_resp(pb_dev_state_t *this);
+int pb_dev_init_com(pb_dev_state_t *state, uint d, const char* s, const char *p);
+void pb_dev_disconnect(pb_dev_state_t *state);
+void pb_dev_terminate(pb_dev_state_t *state);
+void pb_dev_clean_up(pb_dev_state_t *state);
+int pb_dev_read(pb_dev_state_t *state, void *buf, size_t n_bytes);
+int pb_dev_request_wait_block(pb_dev_state_t *state, pb_wait_t *wait_s);
+int pb_dev_request_wait_nonblock(pb_dev_state_t *state, pb_wait_t *wait_s);
+int pb_dev_pick_wait_resp(pb_dev_state_t *state);
 
 BSIM_INLINE void pb_send_msg(int ff, pc_header_t header,
                              void *s, size_t s_size) {
