@@ -48,6 +48,7 @@ int pb_create_fifo_if_not_there(const char *fifo_path) {
 int pb_create_com_folder(const char *s) {
   char *UserName = NULL;
   int UserNameLength = 0;
+  bool free_UserName = false;
   struct passwd *pw;
 
   uid_t euid = geteuid();
@@ -73,8 +74,12 @@ int pb_create_com_folder(const char *s) {
     UserName = getenv("USER");
   }
   if (UserName == NULL) {
-    bs_trace_error_line("Couldn't get the user name to build the tmp path for the interprocess comm (euid=%i)"
-        "(this shouldn't have happened, could not find the environment variables LOGNAME or USER either), errno=%i\n", euid, errno);
+    bs_trace_info_line(2, "Couldn't get the user name to build the tmp path for the interprocess comm (euid=%i)"
+        "(this shouldn't have happened, could not find the environment variables LOGNAME or USER either), errno=%i."
+        "Falling back to using the numeric eid\n", euid, errno);
+    UserName = bs_calloc(sizeof(char), 32);  /* plenty of margin even for 64bits ints */
+    free_UserName = true;
+    sprintf(UserName, "%i", euid);
   }
 
   UserNameLength = strlen(UserName);
@@ -82,6 +87,10 @@ int pb_create_com_folder(const char *s) {
   pb_com_path = (char*)bs_calloc(10 + strlen(s) + UserNameLength, sizeof(char));
 
   sprintf(pb_com_path, "/tmp/bs_%s", UserName);
+
+  if (free_UserName) {
+    free(UserName);
+  }
 
   if (bs_createfolder(pb_com_path) != 0) {
     free(pb_com_path);
