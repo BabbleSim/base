@@ -38,6 +38,24 @@ int pb_create_fifo_if_not_there(const char *fifo_path) {
   return 0;
 }
 
+/*
+ * Do a quick sanity check of the simulation id. To warn users if it is likely going to create
+ * issues.
+ */
+bool pb_check_sim_id(const char *s) {
+  int i = 0;
+  while (s[i] != 0) {
+    if ((s[i] == '/')) {
+      bs_trace_warning_line("The sim_id ('%s') has '%c' in it. Please note the sim_id is used to "
+                            "create filesystem paths. Using special characters will likely result "
+                            "in undesired behavior\n", s, s[i]);
+      return true;
+    }
+    i++;
+  }
+  return false;
+}
+
 /**
  * Create the comm folder if it doesn't exist
  * And sets its name in cb_com_path
@@ -267,6 +285,8 @@ int pb_phy_initcom(pb_phy_state_t *this, const char* s, const char *p, uint n) {
     return -1;
   }
 
+  (void)pb_check_sim_id(s);
+
   pb_com_path_length = pb_create_com_folder(s);
 
   this->device_connected = NULL;
@@ -450,6 +470,8 @@ int pb_dev_init_com(pb_dev_state_t *this, uint d, const char* s, const char *p) 
     bs_trace_warning_line("%s called twice in a simulation\n", __func__);
     return -1;
   }
+
+  (void)pb_check_sim_id(s);
 
   /* In case we fail, we initialize them to "invalid" content*/
   this->ff_path_dtp = NULL;

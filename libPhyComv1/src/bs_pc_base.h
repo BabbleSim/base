@@ -18,6 +18,7 @@ extern "C"{
 
 int pb_create_fifo_if_not_there(const char* fifo_name);
 int pb_create_com_folder(const char* s);
+bool pb_check_sim_id(const char *s);
 void pb_send_payload(int ff, void *buf, size_t size);
 BSIM_INLINE void pb_send_msg(int ff, pc_header_t header,
                              void *s, size_t s_size);
