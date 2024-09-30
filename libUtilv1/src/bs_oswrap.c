@@ -5,6 +5,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#undef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
 #include <stdlib.h>
 #include <stdint.h>
 #include <errno.h>
@@ -18,7 +20,6 @@
 #include "bs_oswrap.h"
 #include "bs_string.h"
 
-#if (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE>=200809))
 /**
  * Set the handler for the signals listed in <signals[<n>]>,
  * Normally <signals> will be set to (int[]){SIGTERM, SIGINT}
@@ -42,11 +43,6 @@ void bs_set_sig_term_handler(void (*f)(int), int signals[], int n) {
     sigaction(signals[i], &act, NULL);
   }
 }
-#else
-void bs_set_sig_term_handler(void (*f)(int), int signals[], int n) {
-  bs_trace_error_line("Compile with -D_POSIX_C_SOURCE>=200809\n");
-}
-#endif
 
 #if defined(__linux)
 /**
