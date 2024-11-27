@@ -25,7 +25,7 @@ BSIM_INLINE uint bs_random_Bern(uint32_t probability);
  * probability: number between 0 (0.0) and RAND_PROB_1 (1.0)
  */
 BSIM_INLINE uint bs_random_Bern(uint32_t probability){
-  if ( random() < probability )
+  if ( (uint32_t)random() < probability )
     return 1;
   else
     return 0;
