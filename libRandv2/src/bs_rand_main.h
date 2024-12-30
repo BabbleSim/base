@@ -30,7 +30,8 @@ char bs_random_bit(void);
 double bs_random_uniform(void);
 double bs_random_uniformR(double a, double b);
 int    bs_random_uniformRi(int a, int b);
-uint32_t bs_random_uint32(void);
+uint32_t bs_random_uint32(void); //This function is deprecated and buggy
+void bs_random_buffer(char *buffer, size_t size);
 
 uint bs_random_Binomial(uint n, uint32_t probability);
 

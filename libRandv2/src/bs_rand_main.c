@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <complex.h>
 #include "bs_tracing.h"
@@ -178,8 +179,34 @@ int bs_random_uniformRi(int a, int b){
   return i_u;
 }
 
+/*
+ * This function is deprecated, consider using bs_random_buffer(&result, sizeof(uint32_t)) instead
+ * Note this function is buggy, as it only produces a 31bit random number.
+ */
 uint32_t bs_random_uint32(){
   return (uint32_t)random();
+}
+
+/*
+ * Fill a buffer with <length> random bytes
+ */
+void bs_random_buffer(char *buffer, size_t size) {
+  unsigned int bits_ready = 0;
+  uint64_t value = 0;
+
+  while (size) {
+    value = value | ((uint64_t)random() << bits_ready);
+    /* The host random() provides a number between 0 and 2**31-1. Bit 32 is always 0 */
+    bits_ready += 31;
+
+    size_t to_copy = BS_MIN(size, bits_ready / 8);
+
+    memcpy(buffer, &value, to_copy);
+    buffer += to_copy;
+    size -= to_copy;
+    value >>= to_copy * 8;
+    bits_ready -= to_copy * 8;
+  }
 }
 
 /**
