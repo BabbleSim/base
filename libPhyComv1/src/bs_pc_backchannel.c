@@ -187,7 +187,7 @@ void bs_bc_send_msg(uint channel_id, uint8_t *ptr, size_t size){
 
   int bytes_written = write(channels_status[channel_id].ff[Out], message, size+4);
   if ( bytes_written != size+4 ) {
-    bs_trace_error_line("back channel %u filled up (%i != %z+4, errno=%i)\n",
+    bs_trace_error_line("back channel %u filled up (%i != %zu+4, errno=%i)\n",
                         channel_id, bytes_written, size, errno);
   }
 }
