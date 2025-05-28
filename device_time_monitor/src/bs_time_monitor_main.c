@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
     tic_end = tv.tv_sec*1e6 + tv.tv_nsec/1000;
 
     bs_trace_raw_manual_time(2, time_r,
-                             "@%"PRItime"us reached (instantaneous speed=%.2fx, average=%.2fx)        \r",
+                             "@%"PRItime"us reached (instantaneous speed=%06.2fx, average=%06.2fx)        \r",
                              time_r, args.interval/(double)(tic_end-tic_start), time_r/(double)(tic_end-tic_1st_start));
     fflush(stdout);
     time += args.interval;
