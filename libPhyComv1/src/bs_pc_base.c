@@ -455,7 +455,7 @@ void pb_phy_get_wait_s(pb_phy_state_t *this, uint d, pb_wait_t *wait_s) {
  * Initialize the communication interface with the phy
  *
  * inputs:
- *  this  Pointer to structure where the connection status will be keps.
+ *  this  Pointer to structure where the connection status will be kept.
  *         MUST be initialized with zeroes.
  *  d     The device number this device will have in this phy
  *  s     String identifying the simulation
