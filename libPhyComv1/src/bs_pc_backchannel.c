@@ -43,7 +43,7 @@
 #include "bs_tracing.h"
 #include "bs_oswrap.h"
 
-static bool channel_ever_opened = false;
+static bool channel_opened;
 
 typedef enum {In=0, Out} direction_t;
 
@@ -64,7 +64,7 @@ static uint *channel_id_table = NULL;
  * Close and cleanup the back channel communication
  */
 void bs_clean_back_channels(){
-  if ( channel_ever_opened ){
+  if (channel_opened) {
     if ( channels_status != NULL ) {
       for (int i = 0; i < number_back_channels ; i ++) {
         for (direction_t dir = In ; dir <= Out; dir++) {
@@ -88,6 +88,7 @@ void bs_clean_back_channels(){
     channel_id_table = NULL;
   }
   number_back_channels = 0;
+  channel_opened = false;
 }
 
 /**
@@ -100,7 +101,8 @@ void bs_clean_back_channels(){
  *   channel_numbers[3] = {0,1,0};
  *   number_of_channels = 3;
  *
- * Note that this function can only be called *once*
+ * Note that this function should normally only be called once per device to open all channels to all other
+ * devices in a given simulation.
  *
  * This function is blocking until the other side devices open the corresponding back channels
  * This function returns NULL on failure or
@@ -109,8 +111,9 @@ void bs_clean_back_channels(){
  *
  */
 uint *bs_open_back_channel(uint global_dev_nbr, uint* dev_nbrs, uint* channel_nbrs, uint nbr_of_channels){
-  if ( channel_ever_opened )
+  if (channel_opened) {
     bs_trace_error_line("To prevent deadlocks you have to open all channels in one call to %s\n", __func__);
+  }
 
   extern bool is_base_com_initialized;
   if ( ! is_base_com_initialized ){
@@ -118,7 +121,7 @@ uint *bs_open_back_channel(uint global_dev_nbr, uint* dev_nbrs, uint* channel_nb
   }
 
   channels_status = bs_calloc(nbr_of_channels, sizeof(channels_status_t));
-  channel_ever_opened = true;
+  channel_opened = true;
   number_back_channels = nbr_of_channels;
   channel_id_table = bs_malloc(nbr_of_channels*sizeof(uint));
 
