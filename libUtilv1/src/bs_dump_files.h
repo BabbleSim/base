@@ -26,9 +26,6 @@ typedef struct {
 	bs_df_header_f_t header_f; /* Function to print the dump file heading */
 } bs_dumpf_ctrl_t;
 
-#define DUMP_FILE_PTR(FILE_IDX) (f_ctrl[FILE_IDX].fileptr)
-#define IS_DUMP_FILE_ACTIVE(FILE_IDX) (f_ctrl[FILE_IDX].fileptr != NULL)
-
 /**
  * Register a new dump file
  *
@@ -46,7 +43,11 @@ void bs_dump_files_open(const char* s, const unsigned int d);
 void bs_dump_files_close_all(void);
 /* Print to console the list of registered dump files */
 void bs_dump_files_print_files(void);
+/* Get the file pointer of a dump file by its index */
+FILE* bs_dump_file_get_fileptr(unsigned int file_idx);
 
+#define DUMP_FILE_PTR(FILE_IDX) (bs_dump_file_get_fileptr(FILE_IDX))
+#define IS_DUMP_FILE_ACTIVE(FILE_IDX) (bs_dump_file_get_fileptr(FILE_IDX) != NULL)
 
 extern unsigned int bsdf_dump_level;
 void bsdf_cmd_dump_found(char * argv, int offset);

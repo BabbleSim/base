@@ -73,6 +73,14 @@ void bs_dump_files_print_files(void) {
   }
 }
 
+FILE* bs_dump_file_get_fileptr(unsigned int file_idx) {
+  if (file_idx >= number_of_dump_files) {
+    bs_trace_error_line("Trying to get file pointer of dump file with index %u, but only %u dump files are registered.\n",
+                         file_idx, number_of_dump_files);
+  }
+  return df_ctrl[file_idx].fileptr;
+}
+
 void bs_dump_files_open(const char* s, const unsigned int dev_number) {
   char* results_path = NULL;
   bool results_folder_created = false;
