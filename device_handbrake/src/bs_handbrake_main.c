@@ -68,6 +68,8 @@ int main(int argc, char *argv[]) {
         break;
       }
       bs_trace_raw(6,"@%"PRItime" Stalled until real time = %"PRIuMAX"\n", wait_s.end, (uintmax_t)Expected_time);
+    } else {
+      bs_trace_raw(4,"@%"PRItime" Simulation lagging behind real time by %"PRIi64" us\n", wait_s.end, -diff);
     }
   }
 
