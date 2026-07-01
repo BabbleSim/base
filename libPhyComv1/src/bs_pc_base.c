@@ -404,18 +404,6 @@ void pb_phy_disconnect_devices(pb_phy_state_t *this) {
 }
 
 /**
- * Check if we are connected to this device (or any device)
- * Return 1 if we are
- */
-int pb_phy_is_connected_to_device(pb_phy_state_t *this, uint d){
-  if ((this->device_connected == NULL) || (!this->device_connected[d])) {
-    bs_trace_error_line("Programming error while trying to talk to device %i\n", d);
-    return 0;
-  }
-  return 1;
-}
-
-/**
  * Respond to the device at the end of wait
  */
 void pb_phy_resp_wait(pb_phy_state_t *this, uint d) {
