@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <sys/uio.h>
 #include "bs_types.h"
 #include "bs_pc_base_types.h"
 
@@ -68,8 +69,12 @@ BSIM_INLINE void pb_send_msg(int ff, pc_header_t header,
                              void *s, size_t s_size) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    write(ff, &header, sizeof(header));
-    write(ff, s, s_size);
+    struct iovec iov[2] = {
+      { .iov_base = &header, .iov_len = sizeof(header) },
+      { .iov_base = s, .iov_len = s_size },
+    };
+
+    writev(ff, iov, s_size ? 2 : 1);
 #pragma GCC diagnostic pop
 }
 
