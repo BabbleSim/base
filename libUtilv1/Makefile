@@ -11,7 +11,7 @@ A_LIBS32:=
 SO_LIBS:=
 
 DEBUG:=-g
-OPT:=
+OPT:=-O2
 ARCH:=
 WARNINGS:=-Wall -pedantic
 COVERAGE:=
