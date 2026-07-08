@@ -35,7 +35,7 @@ typedef struct {
   char *lock_path;
 } pb_phy_state_t;
 
-BSIM_INLINE int pb_phy_is_connected_to_device(pb_phy_state_t *this, uint d);
+BSIM_INLINE int pb_phy_is_connected_to_device(pb_phy_state_t *state, uint d);
 int pb_phy_initcom(pb_phy_state_t *state, const char* s, const char *p, uint n);
 void pb_phy_disconnect_devices(pb_phy_state_t *state);
 pc_header_t pb_phy_get_next_request(pb_phy_state_t *state, uint d);
@@ -70,8 +70,8 @@ int pb_dev_pick_wait_resp(pb_dev_state_t *state);
  * Check if we are connected to this device (or any device)
  * Return 1 if we are
  */
-BSIM_INLINE int pb_phy_is_connected_to_device(pb_phy_state_t *this, uint d){
-  if ((this->device_connected == NULL) || (!this->device_connected[d])) {
+BSIM_INLINE int pb_phy_is_connected_to_device(pb_phy_state_t *state, uint d){
+  if ((state->device_connected == NULL) || (!state->device_connected[d])) {
     bs_trace_error_line("Programming error while trying to talk to device %i\n", d);
     return 0;
   }
