@@ -131,6 +131,30 @@ void* bs_realloc(void *ptr, size_t size) {
 }
 
 /**
+ * Wrapper to OS strdup which exits if it cannot allocate mem
+ */
+char *bs_strdup(const char *s) {
+  char *ptr = strdup(s);
+
+  if (ptr == NULL) {
+    bs_trace_error_line("Can't allocate memory\n");
+  }
+  return ptr;
+}
+
+/**
+ * Wrapper to OS strndup which exits if it cannot allocate mem
+ */
+char *bs_strndup(const char *s, size_t n) {
+  char *ptr = strndup(s, n);
+
+  if (ptr == NULL) {
+    bs_trace_error_line("Can't allocate memory\n");
+  }
+  return ptr;
+}
+
+/**
  * Move file pointer to the next line
  */
 void bs_skipline(FILE *file) {

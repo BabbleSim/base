@@ -25,6 +25,8 @@ void* bs_malloc(size_t size);
 void* bs_aligned_alloc(size_t alignment, size_t size);
 void* bs_calloc(size_t nmemb, size_t size);
 void* bs_realloc(void *ptr, size_t size);
+char *bs_strdup(const char *s);
+char *bs_strndup(const char *s, size_t n);
 void bs_skipline(FILE *file);
 void bs_readline(char *s, int size, FILE *stream);
 int bs_createfolder(const char* folderpath);
