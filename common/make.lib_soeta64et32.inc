@@ -6,6 +6,7 @@ OBJS32=$(abspath $(addprefix $(COMPONENT_OUTPUT_DIR)/,${SRCS:.c=.32.o}))
 LIBFILE=${LIB_NAME}.a
 LIBFILE32=${LIB_NAME}.32.a
 LIBFILE_DYN=${LIB_NAME}.so
+LIBFILE_DYN32=${LIB_NAME}.32.so
 VERSION_FILE:=${LIB_NAME}.version
 
 all: install
@@ -23,7 +24,7 @@ always_run_this_target:
 .PHONY: all install compile lib clean clean_all ${DEPENDFILES} ${DEPENDFILES32} always_run_this_target version
 #setting the dependencies as phony targets will actually speed up things.. (otherwise make will check if there is implicit rules to remake them)
 
-compile: $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} $(COMPONENT_OUTPUT_DIR)/${LIBFILE} $(COMPONENT_OUTPUT_DIR)/${LIBFILE32}
+compile: $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN32} $(COMPONENT_OUTPUT_DIR)/${LIBFILE} $(COMPONENT_OUTPUT_DIR)/${LIBFILE32}
 
 lib: compile
 
@@ -52,6 +53,9 @@ $(COMPONENT_OUTPUT_DIR)/${LIBFILE32}: ${OBJS32} ${A_LIBS32}
 $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN}: ${OBJS} $(A_LIBS)
 	@${CC} -o $@ -fPIC -shared $^ ${LDFLAGS} ${SO_LIBS} ${A_LIBS} ${COVERAGE}
 
+$(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN32}: ${OBJS32} $(A_LIBS32)
+	@${CC} -m32 -o $@ -fPIC -shared $^ ${LDFLAGS} ${SO_LIBS} ${A_LIBS32} ${COVERAGE}
+
 ${A_LIBS32}:;
 	$(error Required library ($@) not found. Run top level make to build all dependencies in order)
 
@@ -61,7 +65,7 @@ ${A_LIBS}:;
 clean:
 	@echo "Deleting intermediate compilation results"
 	@find $(COMPONENT_OUTPUT_DIR) -name "*.a" -or -name "*.o" -or -name "*.so" -or -name "*.d" | xargs rm
-	@rm $(COMPONENT_OUTPUT_DIR)/${LIBFILE} $(COMPONENT_OUTPUT_DIR)/${LIBFILE32} $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} &> /dev/null ; true
+	@rm $(COMPONENT_OUTPUT_DIR)/${LIBFILE} $(COMPONENT_OUTPUT_DIR)/${LIBFILE32} $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN} $(COMPONENT_OUTPUT_DIR)/${LIBFILE_DYN32} &> /dev/null ; true
 
 clean_coverage:
 	@find $(COMPONENT_OUTPUT_DIR) -name "*.gcda" -or -name "*.gcno" | xargs rm -f ; true
@@ -78,6 +82,6 @@ ${BSIM_LIBS_DIR}/${VERSION_FILE}: version
 ${BSIM_LIBS_DIR}/% : $(COMPONENT_OUTPUT_DIR)/%
 	@cp $< $@ 
 
-install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN} ${BSIM_LIBS_DIR}/${LIBFILE} ${BSIM_LIBS_DIR}/${LIBFILE32} ${BSIM_LIBS_DIR}/${VERSION_FILE}
+install: ${BSIM_LIBS_DIR}/${LIBFILE_DYN} ${BSIM_LIBS_DIR}/${LIBFILE_DYN32} ${BSIM_LIBS_DIR}/${LIBFILE} ${BSIM_LIBS_DIR}/${LIBFILE32} ${BSIM_LIBS_DIR}/${VERSION_FILE}
 
 Makefile: ;
