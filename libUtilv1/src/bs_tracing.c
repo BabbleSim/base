@@ -5,6 +5,7 @@
  */
 
 #include <string.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -21,6 +22,7 @@ static int is_a_tty[2] = {-1,-1}; //-1 = we do not know yet ; Indexed 0:stdout, 
 
 static int trace_level = 0;
 static main_cleanup_f main_cleanup_fpr = NULL; //Function from the application which will be called on exit or error
+static main_cleanupv2_f main_cleanupv2_fpr = NULL;
 static time_f time_fpr = NULL; //Function from the application to get the current time
 
 #define MAX_PREFIX_LEN 40
@@ -61,6 +63,10 @@ int bs_trace_will_it_be_traced(int this_message_level) {
 
 void bs_trace_register_cleanup_function(main_cleanup_f cleanup_f) {
   main_cleanup_fpr = cleanup_f;
+}
+
+void bs_trace_register_cleanup_functionv2(main_cleanupv2_f cleanup_f) {
+  main_cleanupv2_fpr = cleanup_f;
 }
 
 void bs_trace_register_time_function(time_f t_function) {
@@ -122,10 +128,19 @@ void bs_trace_silent_exit(uint8_t code){
     cs_clear_Tsymbols();
   #endif
   uint8_t main_code = 0;
-  if ( main_cleanup_fpr != NULL ){
-    main_code = main_cleanup_fpr();
+  static uint8_t first_code;
+  static bool exiting;
+
+  if (!exiting) {
+    exiting = true;
+    first_code = code;
+    if (main_cleanupv2_fpr != NULL) {
+      main_code = main_cleanupv2_fpr(code);
+    } else if (main_cleanup_fpr != NULL) {
+      main_code = main_cleanup_fpr();
+    }
   }
-  exit(BS_MAX(code, main_code));
+  exit(BS_MAX(BS_MAX(code, main_code), first_code));
 }
 
 static const char *base_trace_type_prefixes[] = {

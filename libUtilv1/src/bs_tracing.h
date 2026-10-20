@@ -59,6 +59,7 @@ extern "C"{
 #include "bs_utils.h"
 
 typedef uint8_t (*main_cleanup_f)(void);
+typedef uint8_t (*main_cleanupv2_f)(uint8_t code);
 typedef bs_time_t (*time_f)(void);
 
 /*
@@ -114,10 +115,24 @@ void bs_trace_set_level(int new_trace_level);
 int bs_trace_will_it_be_traced(int this_message_trace_level);
 
 /*
- * Register the function to be called from the exit() APIs to terminate
- * the program. If none is registered the libC standard exit() will be called.
+ * Register the cleanup function to be called from the exit() APIs during
+ * termination of the program.
+ * This function is expected to return.
  */
 void bs_trace_register_cleanup_function(main_cleanup_f cleanup_f);
+
+/*
+ * Register the cleanup function to be called from the exit() APIs during
+ * termination of the program. <code> is the exit code requested by the caller.
+ *
+ * If <cleanup_f> returns, the program exits with MAX(code, returned value).
+ * <cleanup_f> may also terminate the program itself, in which case it shall
+ * exit with a code != 0 if <code> != 0.
+ *
+ * If registered, this takes precedence over a function registered with
+ * bs_trace_register_cleanup_function().
+ */
+void bs_trace_register_cleanup_functionv2(main_cleanupv2_f cleanup_f);
 
 /*
  * Register a function which returns the current simulated time
