@@ -15,7 +15,7 @@ SO_LIBS:=
 DEBUG:=-g
 OPT:=-O2
 ARCH:=
-WARNINGS:=-Wall -pedantic
+WARNINGS:=-Wall -pedantic -Wno-unused-result -D_FORTIFY_SOURCE=0
 COVERAGE:=
 CFLAGS:=${ARCH} ${DEBUG} ${OPT} ${WARNINGS} -MMD -MP -std=c99  -fPIC ${INCLUDES}
 LDFLAGS:=${ARCH} ${COVERAGE}
