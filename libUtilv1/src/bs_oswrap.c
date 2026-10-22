@@ -76,9 +76,12 @@ uint64_t bs_get_process_start_time(long int pid) {
     if (c == EOF)
       return 0;
   }
-  long long unsigned int start_time;
-  fscanf(fptr,"%llu", &start_time);
-  fclose(fptr);
+  long long unsigned int start_time = 0;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+  (void)fscanf(fptr,"%llu", &start_time);
+  (void)fclose(fptr);
+#pragma GCC diagnostic pop
   return start_time;
 #endif
 }
